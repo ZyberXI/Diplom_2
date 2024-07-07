@@ -1,4 +1,4 @@
-package order;
+package user;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
@@ -7,8 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.constants.ApiEnum;
-import site.nomoreparties.stellarburgers.order.OrderApi;
-import site.nomoreparties.stellarburgers.order.OrderAsserts;
 import site.nomoreparties.stellarburgers.user.UserApi;
 import site.nomoreparties.stellarburgers.user.UserAsserts;
 import site.nomoreparties.stellarburgers.user.UserData;
@@ -16,27 +14,26 @@ import site.nomoreparties.stellarburgers.user.UserRandom;
 /**
  * ToDo:Описание + вывод для красоты
  */
-@DisplayName("Test Order")
-public class OrderGetTest {
-    private OrderApi orderApi;
+@DisplayName("Тесты на логин пользователя")
+public class UserLoginTest {
     private UserApi userApi;
     private UserAsserts userAsserts;
-    private OrderAsserts orderAsserts;
     private UserData userData;
+    private UserData userLogin;
     private String authToken;
 
     @Before
     public void setUp() {
         RestAssured.baseURI = ApiEnum.BASE_URL;
-        orderApi = new OrderApi();
-        userApi = new UserApi();
         userAsserts = new UserAsserts();
-        orderAsserts = new OrderAsserts();
-
+        userApi = new UserApi();
         userData = UserRandom.createRandomUser();
+
         ValidatableResponse response = userApi.createUser(userData);
         userAsserts.assertUserCreatCorrect(response);
+
         authToken = response.extract().path("accessToken");
+        userLogin = new UserData(userData.getEmail(), userData.getPassword(), userData.getName());
     }
 
     @After
@@ -49,24 +46,34 @@ public class OrderGetTest {
 
     @Test
     @DisplayName("Проверка раз")
-    public void getOrdersAuthTest11() {
-        ValidatableResponse response = orderApi.orderGet(authToken);
-        orderAsserts.assertOrderRecievedCorrect(response);
+    public void userLoginTest11() {
+        ValidatableResponse response = userApi.loginUser(userLogin);
+        userAsserts.assertUserLoginCorrect(response);
     }
-
 
     @Test
     @DisplayName("Проверка два")
-    public void getFifty11() {
-        ValidatableResponse response = orderApi.fiftyOrderGet(authToken);
-        orderAsserts.assertOrderRecievedFiftyCountsCorrect(response);
+    public void userLoginWithWrongEmailTest11() {
+        userLogin.setEmail(userLogin.getEmail() + "mistake");
+        ValidatableResponse response = userApi.loginUser(userLogin);
+        userAsserts.assertUserLoginFail(response);
     }
 
+    @Test
+    @DisplayName("Проверка два")
+    public void userLoginWithWrongPasswordTest11() {
+        userLogin.setPassword(userLogin.getPassword() + "mistake");
+        ValidatableResponse response = userApi.loginUser(userLogin);
+        userAsserts.assertUserLoginFail(response);
+    }
 
     @Test
-    @DisplayName("Проверка три")
-    public void getOrderNonAuthTest11() {
-        ValidatableResponse response = orderApi.orderGet("mistake");
-        orderAsserts.assertOrderRecievedFailed(response);
+    @DisplayName("Проверка четыре")
+    public void userLogouttest11() {
+        ValidatableResponse response =userApi.loginUser(userLogin);
+        userAsserts.assertUserLogoutCorrect(response);
+        String refreshToken = response.extract().path("refreshToken");
+        ValidatableResponse response1 = userApi.logoutUser(refreshToken);
+        userAsserts.assertUserLogoutCorrect(response1);
     }
 }

@@ -3,9 +3,7 @@ package site.nomoreparties.stellarburgers.order;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.reflect.TypeToken;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import site.nomoreparties.stellarburgers.constants.ApiEnum;
 
@@ -41,7 +39,7 @@ public class OrderApi {
     public ValidatableResponse orderGet(String authToken) {
         return given()
                 .header("Authorization", authToken)
-                .get(ApiEnum.ALL_ORDERS_PATH).then();
+                .get(ApiEnum.ORDER_PATH).then();
     }
 
     public ValidatableResponse fiftyOrderGet(String authToken) {

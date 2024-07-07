@@ -13,7 +13,9 @@ import site.nomoreparties.stellarburgers.order.OrderAsserts;
 
 import java.util.List;
 import java.util.ArrayList;
-
+/**
+ * ToDo:Описание + вывод для красоты
+ */
 @DisplayName("Order Creation Test")
 public class OrderCreateTest {
     private OrderApi orderApi;
@@ -47,7 +49,7 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("wde")
+    @DisplayName("Проверка")
     public void orderCreateTest() {
         List<String> ingredientIds = getIngredient();
         ValidatableResponse response = orderCreate(ingredientIds);
@@ -55,7 +57,7 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("wde")
+    @DisplayName("Проверка")
     public void orderCreateWithoutIngredientTest() {
         List<String> ingredientIds = new ArrayList<>();
         ValidatableResponse response = orderCreate(ingredientIds);
@@ -63,7 +65,7 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("wde")
+    @DisplayName("Проверка")
     public void orderCreateWithWrongIngredientTest() {
         List<String> ingredientIds = new ArrayList<>();
         ingredientIds.add("errorId");

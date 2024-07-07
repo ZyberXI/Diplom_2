@@ -24,13 +24,15 @@ public class OrderAsserts {
                 .statusCode(200);
     }
 
-    @Step("Валидация статус кода = 403. Проверка тела ответа success = false")
+    @Step("Валидация статус кода = 401. Проверка тела ответа success = false")
     public void assertOrderRecievedFailed(ValidatableResponse response) {
         response
                 .assertThat()
                 .body("success", equalTo(false))
-                .statusCode(403);
-    }@Step("Валидация статус кода = 200. Проверка тела ответа success = true")
+                .statusCode(401);
+    }
+
+    @Step("Валидация статус кода = 200. Проверка тела ответа success = true")
     public void assertOrderCreateCorrect(ValidatableResponse response) {
         response
                 .assertThat()
